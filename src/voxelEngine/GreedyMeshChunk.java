@@ -618,7 +618,7 @@ public class GreedyMeshChunk implements Chunk {
     }
     
     private VoxelFace getVoxelFace(final int x, final int y, final int z, final int side) {
-        if(voxels[x][y][z].voxelType != 0 && faceCullingEnable) {
+        if(voxels[x][y][z].voxelType != 0) {
             if(side == 0) {
                 if(z == 0)
                     neighborVoxel = voxelSystem.getVoxel(translation, 0, x, y, chunkWidth-1);
@@ -629,7 +629,7 @@ public class GreedyMeshChunk implements Chunk {
                     voxels[x][y][z].light = neighborVoxel.light;
                 }
                 else
-                    voxels[x][y][z].transparent = true;
+                    voxels[x][y][z].transparent = faceCullingEnable;
             } else if(side == 1) {
                 if(z == chunkWidth-1)
                     neighborVoxel = voxelSystem.getVoxel(translation, 1, x, y, 0);
@@ -640,7 +640,7 @@ public class GreedyMeshChunk implements Chunk {
                     voxels[x][y][z].light = neighborVoxel.light;
                 }
                 else
-                    voxels[x][y][z].transparent = true;
+                    voxels[x][y][z].transparent = faceCullingEnable;
             } else if(side == 2) {
                 if(x == chunkWidth-1)
                     neighborVoxel = voxelSystem.getVoxel(translation, 2, 0, y, z);
@@ -651,7 +651,7 @@ public class GreedyMeshChunk implements Chunk {
                     voxels[x][y][z].light = neighborVoxel.light;
                 }
                 else
-                    voxels[x][y][z].transparent = true;
+                    voxels[x][y][z].transparent = faceCullingEnable;
             } else if(side == 3) {
                 if(x == 0)
                     neighborVoxel = voxelSystem.getVoxel(translation, 3, chunkWidth-1, y, z);
@@ -662,7 +662,7 @@ public class GreedyMeshChunk implements Chunk {
                     voxels[x][y][z].light = neighborVoxel.light;
                 }
                 else
-                    voxels[x][y][z].transparent = true;
+                    voxels[x][y][z].transparent = faceCullingEnable;
             } else if(side == 4) {
                 if(y == 0)
                     neighborVoxel = voxelSystem.getVoxel(translation, 4, x, chunkHeight-1, z);
@@ -673,7 +673,7 @@ public class GreedyMeshChunk implements Chunk {
                     voxels[x][y][z].light = neighborVoxel.light;
                 }
                 else
-                    voxels[x][y][z].transparent = true;
+                    voxels[x][y][z].transparent = faceCullingEnable;
             } else if(side == 5) {
                 if(y == chunkHeight-1)
                     neighborVoxel = voxelSystem.getVoxel(translation, 5, x, 0, z);
@@ -684,11 +684,12 @@ public class GreedyMeshChunk implements Chunk {
                     voxels[x][y][z].light = neighborVoxel.light;
                 }
                 else
-                    voxels[x][y][z].transparent = true;
+                    voxels[x][y][z].transparent = faceCullingEnable;
             }
             voxels[x][y][z].type = voxelSystem.getVoxelFaces(voxels[x][y][z].voxelType, side);
             return voxels[x][y][z];
         }
+        
         return null;
     }
     

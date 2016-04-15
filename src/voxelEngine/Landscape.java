@@ -86,7 +86,7 @@ public class Landscape implements VoxelSystem, AppState, Savable {
         this.east = new Vector3f(-chunkWidth, 0, 0);
         this.west = new Vector3f(chunkWidth, 0, 0);
         this.chunkHeight = chunkHeight;
-        this.faceCullingEnable = enableFaceCulling;
+        this.faceCullingEnable = faceCullingEnable;
         quadrantI = new LinkedList<List<Chunk[]>>();
         quadrantII = new LinkedList<List<Chunk[]>>();
         quadrantIII = new LinkedList<List<Chunk[]>>();
@@ -313,10 +313,9 @@ public class Landscape implements VoxelSystem, AppState, Savable {
             }
             recycledChunk.init(noise);
             quadrant.get(xAbs).get(yAbs)[z] = recycledChunk;
-            if(faceCullingEnable)
-                for(Chunk neighbor : getNeighbors(location))
-                    if(neighbor != null && neighbor.isAttached())
-                        neighbor.refreshDisplay();
+            for(Chunk neighbor : getNeighbors(location))
+                if(neighbor != null && neighbor.isAttached())
+                    neighbor.refreshDisplay();
         }
     }
     
