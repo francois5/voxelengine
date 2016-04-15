@@ -20,9 +20,11 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Node;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  *
@@ -53,7 +55,7 @@ public class Landscape implements VoxelSystem, AppState, Savable {
     VoxelMaterial[][] MATERIALS;
     VoxelTypes voxelTypes;
     private boolean faceCullingEnable;
-    private Queue<PropagationUpdate> updates = new LinkedList<>();
+    private Queue<PropagationUpdate> updates = new ConcurrentLinkedQueue<>();
     
     private Vector3f translationCp = new Vector3f();
     
@@ -167,7 +169,7 @@ public class Landscape implements VoxelSystem, AppState, Savable {
         for(int iChunk = systemHeight-1; iChunk >= 0; --iChunk) {
             int height = getChunk(x/chunkWidth, z/chunkWidth, iChunk).getHeight(blockX, blockZ);
             if(height != 0)
-               return height; 
+                return height+(chunkHeight*iChunk); 
         }
         return 0;
     }
@@ -431,10 +433,9 @@ public class Landscape implements VoxelSystem, AppState, Savable {
     
     @Override
     public void updatePropagation(Vector3f translation) {
-        List<PropagationUpdate> lsUpdates = (List<PropagationUpdate>)updates;
-        for(PropagationUpdate update : lsUpdates)
+        for(PropagationUpdate update : updates)
             if(update.originTranslation.equals(translation) && !update.isBegan()) {
-                lsUpdates.remove(update);
+                updates.remove(update);
             }
         updates.add(new PropagationUpdate(new Vector3f(translation.x, translation.y, translation.z)));
     }

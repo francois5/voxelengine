@@ -88,7 +88,10 @@ public class TestGreedyMesh extends SimpleApplication implements ActionListener 
         voxelSystem.putBlock(new Vector3f(-11f, systemHeight*(chunkHeight/2)+24, -11f), 4);
         
         voxelSystem.removeBlock(new Vector3f(-10f, systemHeight*(chunkHeight/2)+25, -10f));
-
+        for(int i = -5; i < 5; ++i)
+            voxelSystem.putBlock(new Vector3f(-i, voxelSystem.getHeight(-i, -10), -10f), 4);
+        for(int i = -5; i < 5; ++i)
+            voxelSystem.putBlock(new Vector3f(0, voxelSystem.getHeight(0, -i), -i), 4);
         initCrossHairs();
 
         setupKeys();
@@ -190,7 +193,7 @@ public class TestGreedyMesh extends SimpleApplication implements ActionListener 
         inputManager.addListener(this, "Debug", "FirstPerson");
     }
   
-  private ActionListener leftClicListener = new ActionListener() {
+    private ActionListener leftClicListener = new ActionListener() {
         @Override
         public void onAction(String name, boolean isPressed, float tpf) {
             if (isPressed) {
@@ -202,16 +205,16 @@ public class TestGreedyMesh extends SimpleApplication implements ActionListener 
         }
     };
   
-  private boolean validLocation(Vector3f blockLocation) {
-      return !((characterNode.getLocalTranslation().x >= blockLocation.x-0.2
+    private boolean validLocation(Vector3f blockLocation) {
+        return !((characterNode.getLocalTranslation().x >= blockLocation.x-0.2
               && characterNode.getLocalTranslation().x <= blockLocation.x+1.2)
               && ((characterNode.getLocalTranslation().y+0.5f) >= blockLocation.y-1
               && (characterNode.getLocalTranslation().y+0.5f) <= blockLocation.y+1)
               && ((characterNode.getLocalTranslation().z) >= blockLocation.z-0.2
               && (characterNode.getLocalTranslation().z) <= blockLocation.z+1.2));
-  }
+    }
   
-  private ActionListener rightClicListener = new ActionListener() {
+    private ActionListener rightClicListener = new ActionListener() {
         @Override
         public void onAction(String name, boolean isPressed, float tpf) {
             if (isPressed) {
@@ -223,7 +226,7 @@ public class TestGreedyMesh extends SimpleApplication implements ActionListener 
         }
     };
   
-  private CollisionResults getRayCastingResults(Node node) {
+    private CollisionResults getRayCastingResults(Node node) {
         vector2f_tmp.x = (settings.getWidth() / 2);
         vector2f_tmp.y = (settings.getHeight() / 2);
         Vector3f origin = cam.getWorldCoordinates(vector2f_tmp, 0.0f);

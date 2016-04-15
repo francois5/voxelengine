@@ -242,9 +242,13 @@ public class GreedyMeshChunk implements Chunk {
     }
     
     private void addPropagation(int x, int y, int z, int type) {
+        boolean updatelight = true;
+        if(voxels[x][y][z] != null && voxels[x][y][z].type != 0)
+            updatelight = false;
         internalAddVoxel(x, y, z, type);
         refreshDisplay();
-        voxelSystem.updatePropagation(translation);
+        if(updatelight)
+            voxelSystem.updatePropagation(translation);
     }
     
     private void removePropagation(int x, int y, int z) {
