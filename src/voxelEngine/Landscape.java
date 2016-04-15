@@ -86,7 +86,7 @@ public class Landscape implements VoxelSystem, AppState, Savable {
         this.east = new Vector3f(-chunkWidth, 0, 0);
         this.west = new Vector3f(chunkWidth, 0, 0);
         this.chunkHeight = chunkHeight;
-        this.faceCullingEnable = faceCullingEnable;
+        this.faceCullingEnable = enableFaceCulling;
         quadrantI = new LinkedList<List<Chunk[]>>();
         quadrantII = new LinkedList<List<Chunk[]>>();
         quadrantIII = new LinkedList<List<Chunk[]>>();
