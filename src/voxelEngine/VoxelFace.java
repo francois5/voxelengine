@@ -1,7 +1,7 @@
 package voxelEngine;
 
 /**
- *
+ * 
  * @author francois
  */
 public class VoxelFace {
