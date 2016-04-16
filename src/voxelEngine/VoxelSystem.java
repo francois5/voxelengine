@@ -1,6 +1,8 @@
 package voxelEngine;
 
+import com.jme3.app.state.AppState;
 import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.export.Savable;
 import com.jme3.material.Material;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
@@ -9,7 +11,8 @@ import com.jme3.scene.Node;
  *
  * @author francois
  */
-public interface VoxelSystem {
+public interface VoxelSystem extends AppState, Savable {
+    
     public Node getNode();
     public int getSystemHeight();
     public void putBlock(Vector3f location, int type);
@@ -32,4 +35,6 @@ public interface VoxelSystem {
     public void removePhysicsSpace(RigidBodyControl rigidBodyControl);
     public int getVoxelFaces(int voxelType, int side);
     public Material getMaterial(int type, int light);
+
+    public void destroy();
 }

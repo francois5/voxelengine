@@ -11,6 +11,8 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.util.BufferUtils;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import jme3tools.optimize.GeometryBatchFactory;
 
 /**
@@ -26,6 +28,7 @@ public class GreedyMeshChunk implements Chunk {
     private int voxelSize;
     private int chunkWidth;
     private int chunkHeight;
+    ExecutorService executor = Executors.newFixedThreadPool(8);
 
     private VoxelFace [][][] voxels;
     
@@ -759,10 +762,10 @@ public class GreedyMeshChunk implements Chunk {
     @Override
     public int getHeight(int x, int z) {
         
-        for(int height = 0; height < voxels[x].length; ++height)
-            if((voxels[x][height][z]).voxelType == 0)
-                return height;
-        return this.chunkHeight;
+        for(int height = voxels[x].length-1; height >= 0; --height)
+            if((voxels[x][height][z]).voxelType != 0)
+                return height+1;
+        return 0;
     }
 
     @Override

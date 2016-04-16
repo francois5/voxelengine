@@ -17,22 +17,17 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
+import voxelEngine.FaceTypes;
 import voxelEngine.VoxelSystem;
+import voxelEngine.VoxelTypes;
 
 /**
  *
  * @author francois
  */
-public class TestGreedyMesh extends SimpleApplication implements ActionListener {
+public class TestLandscape extends SimpleApplication implements ActionListener {
     
-    public static TestGreedyMesh app;
-    private VoxelSystem voxelSystem;
-    private BulletAppState bulletAppState;
-    private GameCharControl physicsCharacter;
-    private Vector3f walkDirection = new Vector3f();
-    private Node characterNode;
-    private boolean leftStrafe = false, rightStrafe = false, forward = false, backward = false,
-            fly = false, flying = false, firstPersonMode = true;
+// Voxel system constructor arguments
     private int displayRadius = 10;
     private int initBeforeStartDisplayRadius = 4;
     private int chunkLoadByFrame = 1;
@@ -40,6 +35,22 @@ public class TestGreedyMesh extends SimpleApplication implements ActionListener 
     private int chunkWidth = 16;
     private int chunkHeight = 16;
     private int systemHeight = 8;
+    private boolean enableFaceCulling = true;
+    private int voxelSize = 1;
+    private int noiseResolution = 150;
+    private VoxelNoise noise = new TestVoxelNoise(systemHeight, chunkHeight, maxRelief, noiseResolution);
+    private FaceTypes faceTypes = new TestFaceTypes(); 
+    private VoxelTypes voxelTypes = new TestVoxelTypes();
+//
+    
+    public static TestLandscape app;
+    private VoxelSystem voxelSystem;
+    private BulletAppState bulletAppState;
+    private GameCharControl physicsCharacter;
+    private Vector3f walkDirection = new Vector3f();
+    private Node characterNode;
+    private boolean leftStrafe = false, rightStrafe = false, forward = false, backward = false,
+            fly = false, flying = false, firstPersonMode = true;
     private CubeSelector cubeSelector;
     
     private final Vector2f vector2f_tmp = new Vector2f();
@@ -49,7 +60,7 @@ public class TestGreedyMesh extends SimpleApplication implements ActionListener 
     private float camHeight = 1.7f;
     
     public static void main(String[] args) {
-        final TestGreedyMesh app = new TestGreedyMesh();
+        final TestLandscape app = new TestLandscape();
         app.settings = new AppSettings(true);
         //app.setShowSettings(false);
         app.settings.setResolution(1024, 576);
@@ -72,11 +83,17 @@ public class TestGreedyMesh extends SimpleApplication implements ActionListener 
         bulletAppState = new BulletAppState();
         bulletAppState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
         stateManager.attach(bulletAppState);
-        int resolution = 150;
-        VoxelNoise noise = new TestVoxelNoise(systemHeight, chunkHeight, maxRelief, resolution);
+        
+        // Instanciation of the voxel system
         voxelSystem = new Landscape(this, bulletAppState, displayRadius, initBeforeStartDisplayRadius, chunkLoadByFrame, 
-                systemHeight, 1, chunkWidth, chunkHeight, true, noise, new TestFaceTypes(), new TestVoxelTypes());
+                systemHeight, voxelSize, chunkWidth, chunkHeight, enableFaceCulling, noise, faceTypes, voxelTypes);
 
+        /*
+         * Little example of adding and removing blocks after the chunk generation
+         * Don't use that to generate the initial "world" this must be done by the VoxelNoise
+         * 
+         * Notice the use of voxelSystem.getHeight(int x, int z)
+         */
         voxelSystem.putBlock(new Vector3f(-10f, systemHeight*(chunkHeight/2)+25, -10f), 4);
         voxelSystem.putBlock(new Vector3f(-11f, systemHeight*(chunkHeight/2)+25, -10f), 4);
         voxelSystem.putBlock(new Vector3f(-10f, systemHeight*(chunkHeight/2)+24, -10f), 4);
@@ -92,8 +109,9 @@ public class TestGreedyMesh extends SimpleApplication implements ActionListener 
             voxelSystem.putBlock(new Vector3f(-i, voxelSystem.getHeight(-i, -10), -10f), 4);
         for(int i = -5; i < 5; ++i)
             voxelSystem.putBlock(new Vector3f(0, voxelSystem.getHeight(0, -i), -i), 4);
+        
+        
         initCrossHairs();
-
         setupKeys();
         //setUpLight();
 
@@ -193,13 +211,17 @@ public class TestGreedyMesh extends SimpleApplication implements ActionListener 
         inputManager.addListener(this, "Debug", "FirstPerson");
     }
   
+  /*
+   * Add and remove blocks on click
+   */
+  
     private ActionListener leftClicListener = new ActionListener() {
         @Override
         public void onAction(String name, boolean isPressed, float tpf) {
             if (isPressed) {
                 Vector3f blockLocation = getCurrentPointedLocation(true);
                 if(blockLocation != null && validLocation(blockLocation)){
-                    TestGreedyMesh.this.voxelSystem.putBlock(blockLocation, 4);
+                    TestLandscape.this.voxelSystem.putBlock(blockLocation, 4);
                 }
             }
         }
@@ -220,7 +242,7 @@ public class TestGreedyMesh extends SimpleApplication implements ActionListener 
             if (isPressed) {
                 Vector3f blockLocation = getCurrentPointedLocation(false);
                 if(blockLocation != null){
-                    TestGreedyMesh.this.voxelSystem.removeBlock(blockLocation);
+                    TestLandscape.this.voxelSystem.removeBlock(blockLocation);
                 }
             }
         }
@@ -285,6 +307,8 @@ public class TestGreedyMesh extends SimpleApplication implements ActionListener 
             cam.setLocation(characterNode.getLocalTranslation().add(0, camHeight, 0));
         }
         
+        // The voxelSystem needs to keep track of a "playerLocation" to generate 
+        // new chunks when the camera is moving
         this.voxelSystem.setPlayerLocation(cam.getLocation());
         
         selectCube();
@@ -322,7 +346,7 @@ public class TestGreedyMesh extends SimpleApplication implements ActionListener 
     @Override
     public void destroy() {
         super.destroy();
-        //this.voxelSystem.destroy();
+        this.voxelSystem.destroy();
     }
     
 }

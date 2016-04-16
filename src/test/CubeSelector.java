@@ -19,7 +19,7 @@ public class CubeSelector {
         parent.attachChild(node);
         for(int i = 0; i < 12; ++i) {
             edges[i] = new Geometry("line", new Line(Vector3f.ZERO, Vector3f.ZERO));
-            edges[i].setMaterial(new Material(TestGreedyMesh.getApp().getAssetManager(),
+            edges[i].setMaterial(new Material(TestLandscape.getApp().getAssetManager(),
                 "Common/MatDefs/Misc/Unshaded.j3md"));
         }
     }

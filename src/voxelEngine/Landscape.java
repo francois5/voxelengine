@@ -7,30 +7,29 @@ import voxelEngine.worldMovement.Narrowing;
 import voxelEngine.worldMovement.WorldMovement;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
-import com.jme3.app.state.AppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
-import com.jme3.export.Savable;
 import com.jme3.material.Material;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Node;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  *
  * @author francois
  */
-public class Landscape implements VoxelSystem, AppState, Savable {
+public class Landscape implements VoxelSystem {
     SimpleApplication app;
     BulletAppState bulletAppState;
     
@@ -69,8 +68,6 @@ public class Landscape implements VoxelSystem, AppState, Savable {
     private final int chunkLoadByFrame;
     private VoxelNoise noise;
     
-    //ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(4);
-
     public Landscape(SimpleApplication app, BulletAppState bulletAppState, int targetDisplayRadius, int initBeforeStartDisplayRadius, 
             int chunkLoadByFrame, int systemHeight, int voxelSize, int chunkWidth, int chunkHeight, 
             boolean enableFaceCulling, VoxelNoise noise, FaceTypes fTypes, VoxelTypes vTypes) {
@@ -246,9 +243,9 @@ public class Landscape implements VoxelSystem, AppState, Savable {
         }
     }
 
-    /*public void destroy() {
-        //executor.shutdown();
-    }*/
+    public void destroy() {
+
+    }
     
     private void initBeforeStart(int radius) {
         for (int x = -radius; x < radius; ++x) {
