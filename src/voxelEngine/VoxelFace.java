@@ -8,7 +8,7 @@ public class VoxelFace {
     
     public boolean transparent;
     public int voxelType;
-    public int type;
+    public int faceType;
     public int light;
 
     public boolean lightOff() {
@@ -21,7 +21,7 @@ public class VoxelFace {
 
     public boolean equals(final VoxelFace face) {
         return face.transparent == this.transparent
-                && face.type == this.type
+                && face.faceType == this.faceType
                 && face.light == this.light;
     }
 }

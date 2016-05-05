@@ -246,7 +246,7 @@ public class GreedyMeshChunk implements Chunk {
     
     private void addPropagation(int x, int y, int z, int type) {
         boolean updatelight = true;
-        if(voxels[x][y][z] != null && voxels[x][y][z].type != 0)
+        if(voxels[x][y][z] != null && voxels[x][y][z].voxelType != 0)
             updatelight = false;
         internalAddVoxel(x, y, z, type);
         refreshDisplay();
@@ -689,7 +689,7 @@ public class GreedyMeshChunk implements Chunk {
                 else
                     voxels[x][y][z].transparent = faceCullingEnable;
             }
-            voxels[x][y][z].type = voxelSystem.getVoxelFaces(voxels[x][y][z].voxelType, side);
+            voxels[x][y][z].faceType = voxelSystem.getVoxelFaces(voxels[x][y][z].voxelType, side);
             return voxels[x][y][z];
         }
         
@@ -724,7 +724,7 @@ public class GreedyMeshChunk implements Chunk {
               final VoxelFace face, 
               final boolean backFace) {
         
-        if (!(face.type == 0)) {
+        if (!(face.faceType == 0)) {
  
         final Vector3f [] localVertices = new Vector3f[4];
 
@@ -747,7 +747,7 @@ public class GreedyMeshChunk implements Chunk {
         mesh.setBuffer(VertexBuffer.Type.Index,    3, BufferUtils.createIntBuffer(localIndexes));
         mesh.updateBound();
         Geometry geo = new Geometry("mesh", mesh);
-        Material mat = getMaterial(face.type, face.light);
+        Material mat = getMaterial(face.faceType, face.light);
         geo.setMaterial(mat);
         mesh.scaleTextureCoordinates(new Vector2f(height,width));
         this.node.attachChild(geo);
